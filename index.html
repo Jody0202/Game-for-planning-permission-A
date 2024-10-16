@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Permission Game</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional: Link to your CSS file -->
+    <script src="script.js" defer></script> <!-- Optional: Link to your JavaScript file -->
+    <style>
+        /* Basic styles for the game */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        #progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        #progress {
+            height: 20px;
+            background-color: #76c7c0;
+            width: 0;
+            transition: width 0.5s;
+        }
+        .scenario {
+            display: none; /* Hide all scenarios initially */
+            margin-top: 20px;
+        }
+        .active {
+            display: block; /* Show active scenario */
+        }
+        .floor-plan {
+            width: 100%;
+            max-width: 600px; /* Adjust to your preferred size */
+            margin: 20px auto;
+        }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #76c7c0;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #5ba19a;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Planning Permission Game</h1>
+    
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+    
+    <div id="scenario1" class="scenario active">
+        <h2>Scenario A: Rear Extension to a Semi-Detached Property</h2>
+        <img src="floorplan_a.jpg" alt="Floor Plan A" class="floor-plan"> <!-- Add your floor plan image -->
+        <p>Is a rear extension allowed under permitted development?</p>
+        <button onclick="nextScenario(2)">Next</button>
+    </div>
+    
+    <div id="scenario2" class="scenario">
+        <h2>Scenario B: Garage Conversion</h2>
+        <img src="floorplan_b.jpg" alt="Floor Plan B" class="floor-plan"> <!-- Add your floor plan image -->
+        <p>Is a garage conversion allowed under permitted development?</p>
+        <button onclick="nextScenario(3)">Next</button>
+    </div>
+
+    <div id="scenario3" class="scenario">
+        <h2>Scenario C: Rear Dormer Loft Conversion in a Conservation Area</h2>
+        <img src="floorplan_c.jpg" alt="Floor Plan C" class="floor-plan"> <!-- Add your floor plan image -->
+        <p>Is a rear dormer loft conversion allowed in a conservation area?</p>
+        <button onclick="finishGame()">Finish</button>
+    </div>
+
+    <script>
+        let currentScenario = 1;
+
+        function nextScenario(scenarioNumber) {
+            document.getElementById(`scenario${currentScenario}`).classList.remove('active');
+            document.getElementById(`scenario${scenarioNumber}`).classList.add('active');
+            currentScenario = scenarioNumber
