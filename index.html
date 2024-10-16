@@ -4,91 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planning Permission Game</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Optional: Link to your CSS file -->
-    <script src="script.js" defer></script> <!-- Optional: Link to your JavaScript file -->
     <style>
-        /* Basic styles for the game */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
         }
-        h1 {
-            text-align: center;
-        }
         #progress-bar {
             width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
+            background-color: #ddd;
+            margin-bottom: 20px;
         }
         #progress {
-            height: 20px;
-            background-color: #76c7c0;
+            height: 30px;
             width: 0;
-            transition: width 0.5s;
+            background-color: #4caf50;
         }
         .scenario {
-            display: none; /* Hide all scenarios initially */
-            margin-top: 20px;
+            display: none;
         }
         .active {
-            display: block; /* Show active scenario */
-        }
-        .floor-plan {
-            width: 100%;
-            max-width: 600px; /* Adjust to your preferred size */
-            margin: 20px auto;
+            display: block;
         }
         button {
-            display: block;
-            margin: 10px auto;
             padding: 10px 20px;
-            background-color: #76c7c0;
-            border: none;
-            color: white;
             font-size: 16px;
             cursor: pointer;
-        }
-        button:hover {
-            background-color: #5ba19a;
         }
     </style>
 </head>
 <body>
 
-    <h1>Planning Permission Game</h1>
-    
-    <div id="progress-bar">
-        <div id="progress"></div>
-    </div>
-    
-    <div id="scenario1" class="scenario active">
+<h1>Planning Permission Challenge</h1>
+<div id="progress-bar">
+    <div id="progress"></div>
+</div>
+
+<div id="scenarios">
+    <div class="scenario active" id="scenario1">
         <h2>Scenario A: Rear Extension to a Semi-Detached Property</h2>
-        <img src="floorplan_a.jpg" alt="Floor Plan A" class="floor-plan"> <!-- Add your floor plan image -->
-        <p>Is a rear extension allowed under permitted development?</p>
+        <p>What do you need to consider for a rear extension? 
+           (Insert relevant information here).</p>
+        <button onclick="nextScenario(1)">Next</button>
+    </div>
+
+    <div class="scenario" id="scenario2">
+        <h2>Scenario B: Garage Conversion</h2>
+        <p>What do you need to consider for a garage conversion? 
+           (Insert relevant information here).</p>
         <button onclick="nextScenario(2)">Next</button>
     </div>
-    
-    <div id="scenario2" class="scenario">
-        <h2>Scenario B: Garage Conversion</h2>
-        <img src="floorplan_b.jpg" alt="Floor Plan B" class="floor-plan"> <!-- Add your floor plan image -->
-        <p>Is a garage conversion allowed under permitted development?</p>
-        <button onclick="nextScenario(3)">Next</button>
-    </div>
 
-    <div id="scenario3" class="scenario">
+    <div class="scenario" id="scenario3">
         <h2>Scenario C: Rear Dormer Loft Conversion in a Conservation Area</h2>
-        <img src="floorplan_c.jpg" alt="Floor Plan C" class="floor-plan"> <!-- Add your floor plan image -->
-        <p>Is a rear dormer loft conversion allowed in a conservation area?</p>
-        <button onclick="finishGame()">Finish</button>
+        <p>What do you need to consider for a dormer loft conversion in a conservation area? 
+           (Insert relevant information here).</p>
+        <button onclick="nextScenario(3)">Finish</button>
     </div>
+</div>
 
-    <script>
-        let currentScenario = 1;
+<script>
+    let currentScenario = 0;
+    const scenarios = document.querySelectorAll('.scenario');
 
-        function nextScenario(scenarioNumber) {
-            document.getElementById(`scenario${currentScenario}`).classList.remove('active');
-            document.getElementById(`scenario${scenarioNumber}`).classList.add('active');
-            currentScenario = scenarioNumber
+    function nextScenario(scenario) {
+        // Hide current scenario
+        scenarios[currentScenario].classList.remove('active');
+        currentScenario += 1;
+
+        // Show next scenario if it exists
+        if (currentScenario < scenarios.length) {
+            scenarios[currentScenario].classList.add('active');
+            updateProgress();
+        } else {
+            alert("Thank you for completing the challenge!");
+        }
+    }
+
+    function updateProgress() {
+        const progress = document.getElementById('progress');
+        const percentage = ((currentScenario + 1) / scenarios.length) * 100;
+        progress.style.width = percentage + '%';
+    }
+</script>
+
+</body>
+</html>
