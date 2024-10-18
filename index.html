@@ -3,89 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning Permission Game</title>
+    <title>Planning Area Restrictions with AR</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawcdn.githack.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
         }
-        #progress-bar {
+        #map {
+            height: 60vh; /* Adjust height for AR view */
             width: 100%;
-            background-color: #ddd;
-            margin-bottom: 20px;
         }
-        #progress {
-            height: 30px;
-            width: 0;
-            background-color: #4caf50;
-        }
-        .scenario {
-            display: none;
-        }
-        .active {
-            display: block;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        #ar-scene {
+            height: 40vh;
+            width: 100%;
+            position: absolute;
+            top: 60vh;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
 
-<h1>Planning Permission Challenge</h1>
-<div id="progress-bar">
-    <div id="progress"></div>
-</div>
+<div id="map"></div>
+<a-scene embedded arjs="sourceType: webcam;" id="ar-scene">
+    <!-- Example AR marker for an Article 4 Direction -->
+    <a-box position="0 0 0" material="color: red;" gps-entity-place="latitude: 51.505; longitude: -0.09">
+        <a-text value="Article 4 Area" position="0 1 0"></a-text>
+    </a-box>
+</a-scene>
 
-<div id="scenarios">
-    <div class="scenario active" id="scenario1">
-        <h2>Scenario A: Single-storey Rear Extension</h2>
-        <p>What do you need to consider for a rear extension? 
-           (Insert relevant information here).</p>
-        <button onclick="nextScenario(1)">Next</button>
-    </div>
-
-    <div class="scenario" id="scenario2">
-        <h2>Scenario B: Garage Conversion</h2>
-        <p>What do you need to consider for a garage conversion? 
-           (Insert relevant information here).</p>
-        <button onclick="nextScenario(2)">Next</button>
-    </div>
-
-    <div class="scenario" id="scenario3">
-        <h2>Scenario C: Rear Dormer Loft Conversion in a Conservation Area</h2>
-        <p>What do you need to consider for a dormer loft conversion in a conservation area? 
-           (Insert relevant information here).</p>
-        <button onclick="nextScenario(3)">Finish</button>
-    </div>
-</div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 
 <script>
-    let currentScenario = 0;
-    const scenarios = document.querySelectorAll('.scenario');
+    const mainMap = L.map('map').setView([51.505, -0.09], 10);
 
-    function nextScenario(scenario) {
-        // Hide current scenario
-        scenarios[currentScenario].classList.remove('active');
-        currentScenario += 1;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(mainMap);
 
-        // Show next scenario if it exists
-        if (currentScenario < scenarios.length) {
-            scenarios[currentScenario].classList.add('active');
-            updateProgress();
-        } else {
-            alert("Thank you for completing the challenge!");
-        }
-    }
+    // Load GeoJSON for restricted areas (as in your original code)
+    fetch('https://raw.githubusercontent.com/Jody0202/Geojson-Data/main/article-4-direction-area.geojson')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: function () {
+                    return { color: 'blue', weight: 2, fillOpacity: 0.5 };
+                }
+            }).addTo(mainMap);
 
-    function updateProgress() {
-        const progress = document.getElementById('progress');
-        const percentage = ((currentScenario + 1) / scenarios.length) * 100;
-        progress.style.width = percentage + '%';
+            // Add AR markers for each restricted area in the GeoJSON
+            data.features.forEach(feature => {
+                const [lon, lat] = feature.geometry.coordinates[0][0]; // Get coordinates of the polygon
+                createARMarker(lat, lon, feature.properties);
+            });
+        })
+        .catch(error => console.error('Error loading GeoJSON:', error));
+
+    function createARMarker(lat, lon, properties) {
+        // Create a new AR entity for each restricted area
+        const scene = document.querySelector('a-scene');
+        const box = document.createElement('a-box');
+        box.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lon}`);
+        box.setAttribute('material', 'color: red; opacity: 0.7');
+        box.setAttribute('scale', '1 1 1');
+
+        // Add a label for the restriction
+        const text = document.createElement('a-text');
+        text.setAttribute('value', properties['notes'] || 'Restricted Area');
+        text.setAttribute('position', '0 1.5 0');
+        text.setAttribute('scale', '2 2 2');
+
+        // Append to the box
+        box.appendChild(text);
+        scene.appendChild(box);
     }
 </script>
 
