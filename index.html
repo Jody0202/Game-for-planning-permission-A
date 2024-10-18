@@ -10,12 +10,14 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/aframe-location-based/ar.min.js"></script>
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: Arial, sans-serif;
         }
         #map {
-            height: 50vh; /* Reduce height to fit AR scene */
+            height: 50vh; /* Map takes up half the screen */
             width: 100%;
         }
         #search-container {
@@ -33,11 +35,8 @@
             padding: 5px;
         }
         a-scene {
-            position: absolute;
-            top: 50vh; /* Position AR scene below the map */
-            left: 0;
-            right: 0;
-            bottom: 0;
+            height: 50vh; /* AR view takes up the other half of the screen */
+            width: 100%;
         }
     </style>
 </head>
@@ -56,8 +55,8 @@
     <!-- Location-based AR -->
     <a-camera gps-camera rotation-reader></a-camera>
 
-    <!-- Example AR object (can be dynamic based on planning restrictions) -->
-    <a-box gps-entity-place="latitude: 51.505; longitude: -0.09" material="color: yellow;" scale="3 3 3"></a-box>
+    <!-- Example AR object (dynamic based on location) -->
+    <a-box gps-entity-place="latitude: 51.505; longitude: -0.09" material="color: yellow;" scale="2 2 2"></a-box>
 </a-scene>
 
 <script>
@@ -87,7 +86,7 @@
                 marker = L.marker([latitude, longitude]).addTo(mainMap).bindPopup(`You are here: ${postcode}`);
                 marker.openPopup();
 
-                // Update the AR box to show at the new location
+                // Update AR box location dynamically
                 updateARBox(latitude, longitude);
             } else {
                 alert('Postcode not found');
@@ -98,10 +97,11 @@
     }
 
     function updateARBox(lat, lon) {
-        // Update the position of the AR object dynamically
+        // Update the AR box location
         const box = document.querySelector('a-box');
         box.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lon}`);
     }
 </script>
+
 </body>
 </html>
