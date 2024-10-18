@@ -3,86 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning Area Restrictions with AR</title>
+    <title>Planning Area AR with Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://rawcdn.githack.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://unpkg.com/aframe/dist/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-ar.js/aframe-ar.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/aframe-location-based/ar.min.js"></script>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
         #map {
-            height: 60vh; /* Adjust height for AR view */
+            height: 50vh; /* Reduce height to fit AR scene */
             width: 100%;
         }
-        #ar-scene {
-            height: 40vh;
-            width: 100%;
+        #search-container {
             position: absolute;
-            top: 60vh;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 10px;
             z-index: 1000;
+            border-radius: 5px;
+            width: 200px;
+        }
+        .search-input {
+            width: 150px;
+            padding: 5px;
+        }
+        a-scene {
+            position: absolute;
+            top: 50vh; /* Position AR scene below the map */
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
 
+<!-- Map -->
+<div id="search-container">
+    <input type="text" id="postcode" placeholder="Enter postcode" />
+    <button onclick="searchPostcode()">Search</button>
+</div>
+
 <div id="map"></div>
-<a-scene embedded arjs="sourceType: webcam;" id="ar-scene">
-    <!-- Example AR marker for an Article 4 Direction -->
-    <a-box position="0 0 0" material="color: red;" gps-entity-place="latitude: 51.505; longitude: -0.09">
-        <a-text value="Article 4 Area" position="0 1 0"></a-text>
-    </a-box>
+
+<!-- AR.js Scene for location-based AR -->
+<a-scene vr-mode-ui="false" embedded arjs="sourceType: webcam; videoTexture: true;">
+    <!-- Location-based AR -->
+    <a-camera gps-camera rotation-reader></a-camera>
+
+    <!-- Example AR object (can be dynamic based on planning restrictions) -->
+    <a-box gps-entity-place="latitude: 51.505; longitude: -0.09" material="color: yellow;" scale="3 3 3"></a-box>
 </a-scene>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
-
 <script>
-    const mainMap = L.map('map').setView([51.505, -0.09], 10);
+    const mainMap = L.map('map').setView([51.505, -0.09], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(mainMap);
 
-    // Load GeoJSON for restricted areas (as in your original code)
-    fetch('https://raw.githubusercontent.com/Jody0202/Geojson-Data/main/article-4-direction-area.geojson')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJSON(data, {
-                style: function () {
-                    return { color: 'blue', weight: 2, fillOpacity: 0.5 };
+    let marker;
+
+    async function searchPostcode() {
+        const postcode = document.getElementById('postcode').value;
+        try {
+            const response = await fetch(`https://api.postcodes.io/postcodes/${postcode}`);
+            const data = await response.json();
+
+            if (data.status === 200) {
+                const { latitude, longitude } = data.result;
+                mainMap.setView([latitude, longitude], 13);
+
+                if (marker) {
+                    mainMap.removeLayer(marker); // Remove previous marker
                 }
-            }).addTo(mainMap);
 
-            // Add AR markers for each restricted area in the GeoJSON
-            data.features.forEach(feature => {
-                const [lon, lat] = feature.geometry.coordinates[0][0]; // Get coordinates of the polygon
-                createARMarker(lat, lon, feature.properties);
-            });
-        })
-        .catch(error => console.error('Error loading GeoJSON:', error));
+                marker = L.marker([latitude, longitude]).addTo(mainMap).bindPopup(`You are here: ${postcode}`);
+                marker.openPopup();
 
-    function createARMarker(lat, lon, properties) {
-        // Create a new AR entity for each restricted area
-        const scene = document.querySelector('a-scene');
-        const box = document.createElement('a-box');
+                // Update the AR box to show at the new location
+                updateARBox(latitude, longitude);
+            } else {
+                alert('Postcode not found');
+            }
+        } catch (error) {
+            console.error('Error fetching postcode:', error);
+        }
+    }
+
+    function updateARBox(lat, lon) {
+        // Update the position of the AR object dynamically
+        const box = document.querySelector('a-box');
         box.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lon}`);
-        box.setAttribute('material', 'color: red; opacity: 0.7');
-        box.setAttribute('scale', '1 1 1');
-
-        // Add a label for the restriction
-        const text = document.createElement('a-text');
-        text.setAttribute('value', properties['notes'] || 'Restricted Area');
-        text.setAttribute('position', '0 1.5 0');
-        text.setAttribute('scale', '2 2 2');
-
-        // Append to the box
-        box.appendChild(text);
-        scene.appendChild(box);
     }
 </script>
-
 </body>
 </html>
