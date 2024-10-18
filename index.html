@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning Area AR with Map</title>
+    <title>Planning Area Restrictions with AR</title>
+    
+    <!-- Leaflet CSS for the map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/aframe/dist/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-ar.js/aframe-ar.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/aframe-location-based/ar.min.js"></script>
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
-            height: 100%;
             font-family: Arial, sans-serif;
         }
         #map {
-            height: 50vh; /* Map takes up half the screen */
+            height: 50vh; /* Adjusted to allow space for AR view */
             width: 100%;
         }
         #search-container {
             position: absolute;
             top: 10px;
-            left: 10px;
+            left: 1.7cm;
             background-color: white;
             padding: 10px;
             z-index: 1000;
@@ -34,74 +30,117 @@
             width: 150px;
             padding: 5px;
         }
-        a-scene {
-            height: 50vh; /* AR view takes up the other half of the screen */
-            width: 100%;
+        #legend {
+            background: white;
+            line-height: 1.5;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
+        }
+        #popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+        #popup-restrictions {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        #close-popup {
+            cursor: pointer;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<!-- Map -->
+<!-- Search container -->
 <div id="search-container">
     <input type="text" id="postcode" placeholder="Enter postcode" />
     <button onclick="searchPostcode()">Search</button>
 </div>
 
+<!-- Map container -->
 <div id="map"></div>
 
-<!-- AR.js Scene for location-based AR -->
+<!-- AR Scene -->
 <a-scene vr-mode-ui="false" embedded arjs="sourceType: webcam; videoTexture: true;">
-    <!-- Location-based AR -->
     <a-camera gps-camera rotation-reader></a-camera>
-
-    <!-- Example AR object (dynamic based on location) -->
     <a-box gps-entity-place="latitude: 51.505; longitude: -0.09" material="color: yellow;" scale="2 2 2"></a-box>
 </a-scene>
 
-<script>
-    const mainMap = L.map('map').setView([51.505, -0.09], 13);
+<!-- Popup for showing restrictions -->
+<div id="popup-overlay">
+    <div id="popup-restrictions">
+        <div id="close-popup">X Close</div>
+        <div id="popup-content"></div>
+    </div>
+</div>
 
+<!-- Leaflet and Turf.js -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+<!-- AR.js for GPS-based AR -->
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<script src="https://rawcdn.githack.com/jeromeetienne/AR.js/2.2.0/aframe/build/aframe-ar.min.js"></script>
+
+<script>
+    // Leaflet Map Setup
+    const mainMap = L.map('map').setView([51.505, -0.09], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(mainMap);
 
-    let marker;
+    // Load GeoJSON for restrictions (adjust URLs)
+    fetch('https://raw.githubusercontent.com/Jody0202/Geojson-Data/main/article-4-direction-area.geojson')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { color: 'blue', weight: 2, fillOpacity: 0.5 }
+            }).addTo(mainMap);
+        });
 
+    // Search for Postcode
     async function searchPostcode() {
         const postcode = document.getElementById('postcode').value;
-        try {
-            const response = await fetch(`https://api.postcodes.io/postcodes/${postcode}`);
-            const data = await response.json();
+        const response = await fetch(`https://api.postcodes.io/postcodes/${postcode}`);
+        const data = await response.json();
 
-            if (data.status === 200) {
-                const { latitude, longitude } = data.result;
-                mainMap.setView([latitude, longitude], 13);
-
-                if (marker) {
-                    mainMap.removeLayer(marker); // Remove previous marker
-                }
-
-                marker = L.marker([latitude, longitude]).addTo(mainMap).bindPopup(`You are here: ${postcode}`);
-                marker.openPopup();
-
-                // Update AR box location dynamically
-                updateARBox(latitude, longitude);
-            } else {
-                alert('Postcode not found');
-            }
-        } catch (error) {
-            console.error('Error fetching postcode:', error);
+        if (data.status === 200) {
+            const { latitude, longitude } = data.result;
+            mainMap.setView([latitude, longitude], 13);
+            const marker = L.marker([latitude, longitude]).addTo(mainMap).bindPopup(`You are here: ${postcode}`);
+            marker.openPopup();
+        } else {
+            alert('Postcode not found');
         }
     }
 
-    function updateARBox(lat, lon) {
-        // Update the AR box location
-        const box = document.querySelector('a-box');
-        box.setAttribute('gps-entity-place', `latitude: ${lat}; longitude: ${lon}`);
-    }
+    // Popup for restrictions
+    document.getElementById('close-popup').addEventListener('click', function() {
+        document.getElementById('popup-overlay').style.display = 'none';
+    });
 </script>
-
 </body>
 </html>
