@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Extension Visualization</title>
-    <!-- A-Frame library -->
+    <title>AR Visualization of House Extension</title>
+    <!-- A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 </head>
 <body>
     <a-scene>
-        <!-- Load the renamed model -->
-        <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/model4.gltf)"
-                  scale="1 1 1" 
-                  position="0 1.5 -4">
+        <!-- Load the GLTF model -->
+        <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
+                  scale="2 2 2" 
+                  position="0 1 -5" rotation="0 180 0">
         </a-entity>
 
         <!-- Ground plane -->
-        <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+        <a-plane position="0 0 -5" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-        <!-- Sky for background -->
+        <!-- Sky background -->
         <a-sky color="#ECECEC"></a-sky>
 
         <!-- Camera -->
