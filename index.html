@@ -4,20 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>House Extension Visualization</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- A-Frame library -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 </head>
 <body>
     <a-scene>
-        <!-- 3D model in .gltf format -->
+        <!-- 3D model in .gltf format (replace the path with your GitHub Pages URL) -->
         <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/model.gltf)"
-                  scale="0.5 0.5 0.5"
-                  position="0 1 -3">
+                  scale="1 1 1" 
+                  position="0 1.5 -4">
         </a-entity>
 
-        <!-- Ground plane for context -->
+        <!-- Ground plane -->
         <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-        <!-- Camera for viewing -->
+        <!-- Sky for a better environment effect -->
+        <a-sky color="#ECECEC"></a-sky>
+
+        <!-- Camera for viewing the scene -->
         <a-camera position="0 1.6 0"></a-camera>
     </a-scene>
 </body>
