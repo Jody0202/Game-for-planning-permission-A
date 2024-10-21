@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Debugging</title>
-    <!-- A-Frame and AR.js Libraries -->
+    <title>AR Visualization of House Extension</title>
+    <!-- A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://aframe.io/releases/1.2.0/aframe-ar.min.js"></script>
 </head>
-<body style="margin: 0; overflow: hidden;">
-    <!-- Set up AR scene -->
-    <a-scene embedded arjs>
-        <!-- Marker detection using Hiro marker -->
-        <a-marker preset="hiro">
-            <!-- Add a basic 3D box as a test -->
-            <a-box position="0 0.5 0" material="color: blue;"></a-box>
-        </a-marker>
+<body>
+    <a-scene>
+        <!-- Load the GLTF model on the ground plane -->
+        <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
+                  scale="1 1 1" 
+                  position="-3 0 -3" rotation="0 0 0"> <!-- Adjusted position to move left -->
+        </a-entity>
 
-        <!-- AR camera -->
-        <a-entity camera></a-entity>
+        <!-- Ground plane -->
+        <a-plane position="0 0 -5" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+
+        <!-- Sky background -->
+        <a-sky color="#ECECEC"></a-sky>
+
+        <!-- Camera -->
+        <a-camera position="0 1.6 0"></a-camera>
     </a-scene>
 </body>
 </html>
