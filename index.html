@@ -9,17 +9,17 @@
 </head>
 <body>
     <a-scene embedded arjs="trackingMethod: best; sourceType: webcam;">
-        <!-- Updated model entity with scale adjustments -->
+        <!-- Adjusted model entity -->
         <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
-                  scale="0.5 0.5 0.5" <!-- Scale down -->
-                  position="0 0.1 0" 
+                  scale="0.5 0.5 0.5"  <!-- Scale down to fit -->
+                  position="0 0.01 0"   <!-- Lower position to place on the plane -->
                   rotation="0 0 0">
         </a-entity>
 
         <!-- Ground plane -->
         <a-plane position="0 0 -5" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-        <!-- Transparent background -->
+        <!-- Set a transparent background -->
         <a-sky color="transparent"></a-sky>
 
         <!-- Camera -->
