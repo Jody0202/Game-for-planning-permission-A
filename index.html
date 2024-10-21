@@ -6,23 +6,22 @@
     <title>AR Visualization of House Extension</title>
     <!-- A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <!-- AR.js for AR functionality -->
+    <script src="https://aframe.io/releases/1.2.0/aframe-ar.min.js"></script>
 </head>
-<body>
-    <a-scene>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
         <!-- Load the GLTF model on the ground plane -->
         <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
                   scale="1 1 1" 
-                  position="-3 0 -3" rotation="0 0 0"> <!-- Adjusted position to move left -->
+                  position="-3 0 -3" rotation="0 0 0">
         </a-entity>
 
         <!-- Ground plane -->
         <a-plane position="0 0 -5" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-        <!-- Sky background -->
-        <a-sky color="#ECECEC"></a-sky>
-
-        <!-- Camera -->
-        <a-camera position="0 1.6 0"></a-camera>
+        <!-- Camera for AR.js -->
+        <a-marker-camera preset="hiro"></a-marker-camera>
     </a-scene>
 </body>
 </html>
