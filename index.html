@@ -11,16 +11,21 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs>
-        <!-- Debug for marker detection -->
+        <!-- Marker-based AR -->
         <a-marker preset="hiro">
-            <!-- Load the GLTF model -->
+            <!-- GLTF model attached to the marker -->
             <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
-                      scale="1 1 1" 
+                      scale="1 1 1"
                       position="0 0 0" rotation="0 0 0">
             </a-entity>
         </a-marker>
 
-        <!-- Camera -->
+        <!-- Add a simple box as a test object -->
+        <a-marker preset="hiro">
+            <a-box position="0 0.5 0" material="color: yellow;"></a-box>
+        </a-marker>
+
+        <!-- AR camera -->
         <a-entity camera></a-entity>
     </a-scene>
 </body>
