@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model in AR</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
@@ -14,13 +15,13 @@
 </head>
 <body>
 
+    <!-- Model Viewer -->
     <model-viewer src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.gltf"
                   ar ar-modes="webxr scene-viewer quick-look"
-                  camera-controls
-                  auto-rotate
+                  auto-rotate camera-controls
                   style="transform: scaleX(-1);"
-                  placement="floor"  <!-- Helps in projecting on the floor -->
-                  min-height="100px"> <!-- Minimum height for proper detection -->
+                  position="0 1.6 0"
+                  onClick="this.toggleAR()">
     </model-viewer>
 
 </body>
