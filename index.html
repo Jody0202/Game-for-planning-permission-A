@@ -1,26 +1,72 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>AR Model Viewer</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene embedded arjs>
-      <a-entity 
-        gltf-model="https://raw.githubusercontent.com/your-github-username/Game-for-planning-permission-A/main/Rear%20Extension%20(1).glb" 
-        position="0 0 -5" 
-        scale="1 1 1">
-      </a-entity>
-      
-      <a-marker preset="hiro">
-        <a-entity 
-          gltf-model="https://raw.githubusercontent.com/your-github-username/Game-for-planning-permission-A/main/Rear%20Extension%20(1).glb" 
-          scale="1 1 1">
-        </a-entity>
-      </a-marker>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Model Viewer</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Include Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include GLTFLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
 
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+    <script>
+        // Set up the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft white light
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(1, 1, 1).normalize();
+        scene.add(directionalLight);
+
+        // Load the GLTF model from GitHub
+        const loader = new THREE.GLTFLoader();
+        loader.load('https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.gltf',
+            function (gltf) {
+                const model = gltf.scene;
+                scene.add(model);
+                model.position.set(0, 0, 0); // Adjust position if needed
+                model.scale.set(1, 1, 1); // Scale model if needed
+
+                // Center camera on model
+                const box = new THREE.Box3().setFromObject(model);
+                const boxSize = box.getSize(new THREE.Vector3()).length();
+                const boxCenter = box.getCenter(new THREE.Vector3());
+
+                camera.position.copy(boxCenter);
+                camera.position.z = boxSize * 1.5;
+                camera.lookAt(boxCenter);
+            },
+            undefined,
+            function (error) {
+                console.error('An error occurred:', error);
+            }
+        );
+
+        // Adjust camera aspect ratio on window resize
+        window.addEventListener('resize', function () {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Render loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
 </html>
