@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>3D Model Viewer in AR</title>
-    <!-- Load the model-viewer library -->
+    <title>3D Model in AR</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
         model-viewer {
@@ -15,11 +14,10 @@
 </head>
 <body>
 
-    <!-- Embed model-viewer with AR settings -->
+    <!-- Model Viewer -->
     <model-viewer src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.gltf"
                   ar ar-modes="webxr scene-viewer quick-look"
                   auto-rotate camera-controls
-                  rotation="0 3.14159 0" <!-- Horizontal flip using radians -->
                   style="transform: scaleX(-1);">
     </model-viewer>
 
