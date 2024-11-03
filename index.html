@@ -1,8 +1,7 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model in AR</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
@@ -14,15 +13,11 @@
     </style>
 </head>
 <body>
-
     <model-viewer src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.gltf"
+                  ios-src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.usdz"
                   ar ar-modes="webxr scene-viewer quick-look"
-                  camera-controls
-                  auto-rotate
-                  style="transform: scaleX(-1);"
-                  position="0 0 0"  <!-- Adjust height if necessary -->
-                  onClick="this.toggleAR()">
+                  camera-controls auto-rotate
+                  style="transform: scaleX(-1);">
     </model-viewer>
-
 </body>
 </html>
