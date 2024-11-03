@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,9 @@
                   ar ar-modes="webxr scene-viewer quick-look"
                   camera-controls
                   auto-rotate
-                  style="transform: scaleX(-1);">
+                  style="transform: scaleX(-1);"
+                  placement="floor"  <!-- Ensure it interacts with the floor -->
+                  min-height="100px"> <!-- Minimum height for projection -->
     </model-viewer>
 
 </body>
