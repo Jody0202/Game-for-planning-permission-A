@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Visualization of House Extension</title>
-    <!-- A-Frame Library -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-</head>
-<body>
-    <a-scene>
-        <!-- Load the GLTF model on the ground plane -->
-        <a-entity gltf-model="url(https://jody0202.github.io/Game-for-planning-permission-A/result.gltf)"
-                  scale="1 1 1" 
-                  position="-3 0 -3" rotation="0 0 0"> <!-- Adjusted position to move left -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR Model Viewer</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene embedded arjs>
+      <a-entity 
+        gltf-model="https://raw.githubusercontent.com/your-github-username/Game-for-planning-permission-A/main/Rear%20Extension.glb" 
+        position="0 0 -5" 
+        scale="1 1 1">
+      </a-entity>
+      
+      <a-marker preset="hiro">
+        <a-entity 
+          gltf-model="https://raw.githubusercontent.com/your-github-username/Game-for-planning-permission-A/main/Rear%20Extension.glb" 
+          scale="1 1 1">
         </a-entity>
+      </a-marker>
 
-        <!-- Ground plane -->
-        <a-plane position="0 0 -5" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
-
-        <!-- Sky background -->
-        <a-sky color="#ECECEC"></a-sky>
-
-        <!-- Camera -->
-        <a-camera position="0 1.6 0"></a-camera>
+      <a-entity camera></a-entity>
     </a-scene>
-</body>
+  </body>
 </html>
