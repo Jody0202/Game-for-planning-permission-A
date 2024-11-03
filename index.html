@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model in AR</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
@@ -13,11 +14,19 @@
     </style>
 </head>
 <body>
-    <model-viewer src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.gltf"
-                  ios-src="https://jody0202.github.io/Game-for-planning-permission-A/FabConvert.com_rear%20extension.usdz"
+
+    <model-viewer src="https://your-model-url.gltf"
+                  alt="A 3D model"
                   ar ar-modes="webxr scene-viewer quick-look"
-                  camera-controls auto-rotate
+                  auto-rotate camera-controls
                   style="transform: scaleX(-1);">
     </model-viewer>
+
+    <script>
+        // Check if AR is supported
+        if (!navigator.xr) {
+            alert('WebXR not supported on this device.');
+        }
+    </script>
 </body>
 </html>
